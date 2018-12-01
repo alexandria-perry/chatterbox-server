@@ -1,4 +1,10 @@
-var messages = { results: [] };
+var messages = { results: [
+  {
+    username: 'James',
+    text: 'test message',
+    roomname: 'lobby'
+  }
+] };
 var defaultCorsHeaders = {
   'access-control-allow-origin': '*',
   'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS',
@@ -12,7 +18,7 @@ exports.requestHandler = function(request, response) {
   
   var statusCode = 200;
   var headers = defaultCorsHeaders;
-  headers['Content-Type'] = 'text/plain';
+  headers['Content-Type'] = 'application/json';
 
   // request.setHeader();
   // request.write();
