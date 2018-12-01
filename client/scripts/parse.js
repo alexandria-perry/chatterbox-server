@@ -1,11 +1,11 @@
 var Parse = {
 
-  server: `http://parse.${window.CAMPUS}.hackreactor.com/chatterbox/classes/messages`,
+  server: 'http://127.0.0.1:3000/',
 
   create: function(message, successCB, errorCB = null) {
 
     $.ajax({
-      url: Parse.server,
+      url: 'http://127.0.0.1:3000/',
       type: 'POST',
       data: JSON.stringify(message),
       contentType: 'application/json',
@@ -14,13 +14,13 @@ var Parse = {
         console.error('chatterbox: Failed to create message', error);
       }
     });
-      },
+  },
 
   readAll: function(successCB, errorCB = null) {
     $.ajax({
-      url: Parse.server,
+      url: 'http://127.0.0.1:3000/',
       type: 'GET',
-      data: { order: '-createdAt' },
+      // data: ,
       contentType: 'application/json',
       success: successCB,
       error: errorCB || function(error) {

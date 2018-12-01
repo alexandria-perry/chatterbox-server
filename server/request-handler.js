@@ -1,32 +1,4 @@
 var messages = { results: [] };
-
-exports.requestHandler = function(request, response) {
-  
-  console.log('Serving request type ' + request.method + ' for url ' + request.url);
-  
-  var statusCode = 200;
-  var headers = defaultCorsHeaders;
-  
-  if (request.method === 'POST' && request.url === '/classes/messages') {
-    request.on('data', (message) => {
-      console.log(message, messages);
-      messages.results.push(message);
-    });
-    request.on('end', () => {
-      messages.results = [Buffer.concat(messages.results).toString()];
-      console.log('on end', messages.results);
-      response.writeHead(201, headers);
-      response.end(messages.results);
-    })
-    
-  } else if (request.method === 'GET' && request.url === '/classes/messages') {
-    response.writeHead(200, headers);
-    response.end(JSON.stringify(messages));
-  }
-  
-  headers['Content-Type'] = 'text/plain';
-};
-
 var defaultCorsHeaders = {
   'access-control-allow-origin': '*',
   'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS',
@@ -34,7 +6,35 @@ var defaultCorsHeaders = {
   'access-control-max-age': 10 // Seconds.
 };
 
+exports.requestHandler = function(request, response) {
+  
+  console.log('Serving request type ' + request.method + ' for url ' + request.url);
+  
+  var statusCode = 200;
+  var headers = defaultCorsHeaders;
+  headers['Content-Type'] = 'text/plain';
 
+  // request.setHeader();
+  // request.write();
+  
+  if (request.method === 'POST' && request.url === '/classes/messages') {
+    request.on('data', (message) => {
+      messages.results.push(JSON.parse(message.toString()));
+    });
+    request.on('end', () => {
+      response.writeHead(201, headers);
+      response.end(JSON.stringify(messages.results[0]));
+    });
+    
+  } else if (request.method === 'GET' && request.url === '/classes/messages') {
+    response.writeHead(200, headers);
+    response.end(JSON.stringify(messages));
+  } else if (request.url !== '/classes/messages') {
+    response.writeHead(404, headers);
+    response.end();
+  }
+  
+};
 
 
 
@@ -130,24 +130,19 @@ var defaultCorsHeaders = {
 
 
 
+// // /*************************************************************
 
+// // You should implement your request handler function in this file.
 
+// // requestHandler is already getting passed to http.createServer()
+// // in basic-server.js, but it won't work as is.
 
+// // You'll have to figure out a way to export this function from
+// // this file and include it in basic-server.js so that it actually works.
 
+// // *Hint* Check out the node module documentation at http://nodejs.org/api/modules.html.
 
-// /*************************************************************
-
-// You should implement your request handler function in this file.
-
-// requestHandler is already getting passed to http.createServer()
-// in basic-server.js, but it won't work as is.
-
-// You'll have to figure out a way to export this function from
-// this file and include it in basic-server.js so that it actually works.
-
-// *Hint* Check out the node module documentation at http://nodejs.org/api/modules.html.
-
-// **************************************************************/
+// // **************************************************************/
 
 // exports.requestHandler = function(request, response) {
 //   // Request and Response come from node's http module.
