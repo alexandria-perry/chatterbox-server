@@ -1,25 +1,29 @@
+var messages = { results: [] };
+
 exports.requestHandler = function(request, response) {
-
+  
   console.log('Serving request type ' + request.method + ' for url ' + request.url);
-
+  
   var statusCode = 200;
-  var messages = { results: [] };
   var headers = defaultCorsHeaders;
-
+  
   if (request.method === 'POST' && request.url === '/classes/messages') {
     request.on('data', (message) => {
-      messages[results].push(message);
+      console.log(message, messages);
+      messages.results.push(message);
     });
     request.on('end', () => {
+      messages.results = [Buffer.concat(messages.results).toString()];
+      console.log('on end', messages.results);
       response.writeHead(201, headers);
-      response.end(JSON.stringify(messages));
+      response.end(messages.results);
     })
-
+    
   } else if (request.method === 'GET' && request.url === '/classes/messages') {
-      response.writeHead(200, headers);
-      response.end(JSON.stringify(messages));
+    response.writeHead(200, headers);
+    response.end(JSON.stringify(messages));
   }
-
+  
   headers['Content-Type'] = 'text/plain';
 };
 
