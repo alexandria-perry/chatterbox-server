@@ -21,13 +21,14 @@ var App = {
   },
 
   fetch: function(callback = ()=>{}) {
+    console.log('enter fetch function');
     Parse.readAll((data) => {
-
+      
       // Don't bother to update if we have no messages
-      // if (!data.results || !data.results.length) { return; }
+      if (!JSON.parse(data).results || !JSON.parse(data).results.length) { return; }
 
-      Rooms.update(data.results, RoomsView.render);
-      Messages.update(data.results, MessagesView.render);
+      Rooms.update(JSON.parse(data).results, RoomsView.render);
+      Messages.update(JSON.parse(data).results, MessagesView.render);
       
       callback();
     });

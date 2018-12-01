@@ -2,13 +2,15 @@ var messages = { results: [
   {
     username: 'James',
     text: 'test message',
-    roomname: 'lobby'
+    roomname: 'lobby',
+    objectID: '58JFk3908fub',
+    createdAt: ''
   }
 ] };
 var defaultCorsHeaders = {
   'access-control-allow-origin': '*',
   'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  'access-control-allow-headers': 'content-type, accept',
+  'access-control-allow-headers': '*',
   'access-control-max-age': 10 // Seconds.
 };
 
@@ -18,14 +20,20 @@ exports.requestHandler = function(request, response) {
   
   var statusCode = 200;
   var headers = defaultCorsHeaders;
-  headers['Content-Type'] = 'application/json';
+  headers['Content-Type'] = 'plain/text';
 
   // request.setHeader();
   // request.write();
+
+  if(request.method === 'OPTIONS') {
+    response.writeHead(202, headers);
+    response.end();
+  }
   
   if (request.method === 'POST' && request.url === '/classes/messages') {
     request.on('data', (message) => {
       messages.results.push(JSON.parse(message.toString()));
+      console.log('within POST',JSON.parse(message.toString()));
     });
     request.on('end', () => {
       response.writeHead(201, headers);
@@ -35,6 +43,7 @@ exports.requestHandler = function(request, response) {
   } else if (request.method === 'GET' && request.url === '/classes/messages') {
     response.writeHead(200, headers);
     response.end(JSON.stringify(messages));
+
   } else if (request.url !== '/classes/messages') {
     response.writeHead(404, headers);
     response.end();
